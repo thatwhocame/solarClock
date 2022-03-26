@@ -3,7 +3,7 @@
 
 MicroDS3231 rtc;
 GyverOLED<SSD1306_128x64, OLED_NO_BUFFER> oled;
-float lambda = 7275.386666666667  //Долгота Санкт-Петербурга в секундах
+float lambda = 7275.386666666667;  //Долгота Санкт-Петербурга в секундах
 
 void setup() {
   oled.init();
@@ -21,7 +21,7 @@ float istTime(float UTC, float lambda, int dayNum){
   return UTC + lambda + timeUr(dayNum);
 }
 
-remya operator+(const vremya &t1, long int  &k)
+vremya operator+(const vremya &t1, long int  &k)
 {
    vremya c;
   //ПРосто представим переменную t1 в виде большого-большого количества секунд
