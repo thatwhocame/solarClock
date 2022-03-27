@@ -5,17 +5,33 @@
 MicroDS3231 rtc;
 GyverOLED<SSD1306_128x64, OLED_NO_BUFFER> oled;
 float lambda = 7275.386666666667;  //Долгота Санкт-Петербурга в секундах
+int * resTime;
 
 void setup() {
   rtc.setTime(BUILD_SEC, BUILD_MIN, BUILD_HOUR, BUILD_DAY, BUILD_MONTH, BUILD_YEAR);
   oled.init();
   Serial.begin(9600);
+  oled.clear();
 }
 
 void loop() {
   int UTC = timeTOsec(rtc.getHours(), rtc.getMinutes(), rtc.getSeconds());
   int dayNum = dayCounter(rtc.getDay(), rtc.getMonth(), rtc.getYear());
-  istTime(UTC, lambda, dayNum);
+  resTime = timeTOhour(istTime(UTC, lambda, dayNum));
+  oled.home();
+  oled.print(rtc.getHours());
+  oled.print(':');
+  oled.print(rtc.getMinutes());
+  oled.print(':');
+  oled.print(rtc.getSeconds());
+  /*
+  oled.print(resTime[0]);
+  oled.print(':');
+  oled.print(resTime[1]);
+  oled.print(':');
+  oled.print(resTime[2]);
+  oled.clear();
+  */
 }
 
 float timeUr(int dayNum){
@@ -49,18 +65,3 @@ int dayCounter(int Day, int Month, int Year)
     if ((( Year%4 == 0 && Year%100 != 0 ) || Year%400 == 0) && Month > 2 ) N++;
     return N + Day;
 }
-
-  //ПРосто представим переменную t1 в виде большого-большого количества секунд
-  //long int temp= t1.n* 3600+ t1.m* 60+ t1.g;
- 
-  //Теперь сложим имеющееся время и прибавляемое
-  //temp+= k;
-  
-  //А теперь просто переведём temp (большое-большое количество секунд) в часы, минуты и секунда
-  //c.n= ((temp/3600)%24); //Это вот столько часов
- 
-  //Теперь по минутам
-  //c.m= temp%3600/60;
-  
-  //И по секундам
-  //c.g= temp%60;
