@@ -28,9 +28,9 @@ void loop(){
   oled.update();
   delay(200);
 }
-void drawTrend(int widthTrend, int heightTrend, int xTrend, byte yTrend, byte cn, int *in){
+void drawTrend(int widthTrend, int heightTrend, int xTrend, byte yTrend, int time, int *in){
    //добавляем новое значение
-  in[sizeTrend-1]=analogRead(cn);
+  in[sizeTrend-1]=time;
   byte oldX=0;
   byte oldY=0+yTrend;
   int mn=1000;
