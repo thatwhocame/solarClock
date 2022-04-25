@@ -3,30 +3,30 @@
 #include <Arduino.h>
 
 MicroDS3231 rtc;
-GyverOLED<SSH1106_128x64> oled;
+GyverOLED<SSH1106_128x64, OLED_NO_BUFFER> oled;
 float lambda = 7275.386666666667;  //Долгота Санкт-Петербурга в секундах
 int * resTime;
 
 void setup() {
   rtc.setTime(BUILD_SEC, BUILD_MIN, BUILD_HOUR, BUILD_DAY, BUILD_MONTH, BUILD_YEAR);
   oled.init();
-  oled.textMode(BUF_REPLACE);
-  Serial.begin(9600);
   oled.clear();
-  oled.update();
 }
 
 void loop() {
   int UTC = timeTOsec(rtc.getHours(), rtc.getMinutes(), rtc.getSeconds());
   int dayNum = dayCounter(rtc.getDay(), rtc.getMonth(), rtc.getYear());
   resTime = timeTOhour(istTime(UTC, lambda, dayNum));
-  oled.home();
-  oled.print(resTime[0]);
+  oled.setScale(2);
+  oled.setCursor(15, 3);
+  oled.print(rtc.getHours());
   oled.print(':');
-  oled.print(resTime[1]);
+  oled.print(rtc.getMinutes());
   oled.print(':');
-  oled.print(resTime[2]);
-  oled.update();
+  oled.print(rtc.getSeconds());
+  oled.setScale(1);
+  oled.setCursor(0, 7);
+  oled.print(rtc.getDateString());
 }
 
 float timeUr(int dayNum){
@@ -43,9 +43,9 @@ int timeTOsec(int hours, int minutes, int seconds){
 }
 int* timeTOhour(int seconds){
   int time[3];
-  time[0] = (seconds/3600)%24;
-  time[1] = seconds%3600/60;
-  time[2] = seconds%60;
+  time[0] = seconds/3600;
+  time[1] = (seconds%3600)/60;
+  time[2] = (seconds%3600)%60;
   return time;
 }
 
